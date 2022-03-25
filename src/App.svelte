@@ -45,10 +45,16 @@ import { Orientation } from "./types";
 		</div>
 		{/if}
 
-		{#if hasOrientationEvent}
+		{#if hasOrientationEvent && orientation}
 		<div>
 			<span class="label">Orientation Event: </span>
-			<span class="value">{orientation}</span>
+			<span class="complex-value">
+				<div class="ori">
+				<div><span class="label">alpha: </span><span class="value">{orientation.alpha.toFixed(2)}</span></div>
+				<div><span class="label">beta: </span><span class="value">{orientation.beta.toFixed(2)}</span></div>
+				<div><span class="label">gamma: </span><span class="value">{orientation.gamma.toFixed(2)}</span></div>
+				</div>
+			</span>
 			
 		</div>
 		{/if}
@@ -57,10 +63,28 @@ import { Orientation } from "./types";
 	
 	
 </main>
-<footer><h4>User Agent: {userAgent}</h4></footer>
+<footer>User Agent: {userAgent}</footer>
 
 <style>
+	.complex-value {
+		display: inline-block;
+	}
+
+	.ori {
+		display: flex;
+		flex-flow: column;
+	}
 	.label {
 		font-weight: bold;
+	}
+
+	.ori .label {
+		min-width: 5rem;
+		display: inline-block;
+	}
+
+	footer {
+		font-weight: bold;
+		font-size: 0.5rem;
 	}
 </style>
