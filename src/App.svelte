@@ -38,6 +38,38 @@
   window.addEventListener("devicemotion", handleMotionEvent);
   window.addEventListener("deviceorientation", handleOrientationChange);
 
+  const hasAccelerometr = "Accelerometer" in window;
+  let acceleration: number = 0;
+  let maxAcceleration: number = 0;
+
+  if (hasAccelerometr) {
+    // @ts-ignore
+    navigator.permissions.query({ name: "accelerometer" }).then((result) => {
+      console.log(`Permission for accelerometr ${result.state}`);
+    });
+    try {
+      const ametr = new Accelerometer({
+        frequency: 10,
+        referenceFrame: "device",
+      });
+      ametr.start();
+      ametr.addEventListener("error", (evt) => {
+        console.error(`Accelerometer error ${evt.error.name}`, evt.error);
+      });
+      ametr.addEventListener("activate", (evt) => {
+        console.log("Accelerometer activated");
+      });
+      ametr.addEventListener("reading", (evt) => {
+        acceleration = Math.sqrt(ametr.x * ametr.x + ametr.y * ametr.y + ametr.z * ametr.z);
+        if (acceleration > maxAcceleration) {
+          maxAcceleration = acceleration
+        }
+      })
+    } catch (e) {
+      console.error("Error creating Accelerometer", e);
+    }
+  }
+
   onDestroy(() => {
     window.removeEventListener("devicemotion", handleMotionEvent);
     window.removeEventListener("deviceorientation", handleOrientationChange);
@@ -53,9 +85,9 @@
       const soundSleep = await loadAudioFile("static/will_sleep_soon.mp3", ac);
       const soundExtended = await loadAudioFile("static/extended.mp3", ac);
       detectorTimeout = window.setTimeout(() => {
-		playBuffer(soundSleep, ac);
+        playBuffer(soundSleep, ac);
         detector = new ShakeDetector((how) => {
-		  playBuffer(soundExtended, ac);
+          playBuffer(soundExtended, ac);
           console.log(`Motion detected ${how}`);
           detectMotion = false;
         });
@@ -130,6 +162,26 @@
             <div>
               <span class="label">diff: </span><span class="value"
                 >{orientationDiff.toFixed(2)}</span
+              >
+            </div>
+          </div>
+        </span>
+      </div>
+    {/if}
+
+    {#if hasAccelerometr}
+      <div>
+        <span class="label">Accelerometer: </span>
+        <span class="complex-value">
+          <div class="ori">
+            <div>
+              <span class="label">actual: </span><span class="value"
+                >{acceleration.toFixed(2)}</span
+              >
+            </div>
+            <div>
+              <span class="label">max: </span><span class="value"
+                >{maxAcceleration.toFixed(2)}</span
               >
             </div>
           </div>
