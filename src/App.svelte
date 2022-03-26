@@ -1,7 +1,7 @@
 <script lang="ts">
 	import "@picocss/pico";
 import { onDestroy } from "svelte";
-import { Orientation } from "./types";
+import { Orientation } from "./movement";
 	const userAgent = navigator.userAgent;
 	const hasMotionEvent = "DeviceMotionEvent" in window;
 	let motionRaw: DeviceMotionEventAcceleration;
@@ -9,7 +9,9 @@ import { Orientation } from "./types";
 	let motionMax = 0;
 
 	const hasOrientationEvent = "DeviceOrientationEvent" in window;
+	let startOrientation:Orientation;
 	let orientation: Orientation;
+	let orientationDiff:number = 0;
 
 	const handleMotionEvent = (evt: DeviceMotionEvent) => {
 		motionRaw = evt.acceleration;
@@ -23,6 +25,12 @@ import { Orientation } from "./types";
 
 	const handleOrientationChange = (evt: DeviceOrientationEvent) => {
 		orientation = new Orientation(evt.alpha, evt.beta, evt.gamma);
+		if (startOrientation == null) {
+			startOrientation = orientation;
+		}
+
+		orientationDiff = startOrientation.delta(orientation).maxAbs;
+
 	}
 
 
@@ -63,6 +71,7 @@ import { Orientation } from "./types";
 				<div><span class="label">alpha: </span><span class="value">{orientation.alpha.toFixed(2)}</span></div>
 				<div><span class="label">beta: </span><span class="value">{orientation.beta.toFixed(2)}</span></div>
 				<div><span class="label">gamma: </span><span class="value">{orientation.gamma.toFixed(2)}</span></div>
+				<div><span class="label">diff: </span><span class="value">{orientationDiff.toFixed(2)}</span></div>
 				</div>
 			</span>
 			
