@@ -60,7 +60,8 @@
         console.log("Accelerometer activated");
       });
       ametr.addEventListener("reading", (evt) => {
-        acceleration = Math.sqrt(ametr.x * ametr.x + ametr.y * ametr.y + ametr.z * ametr.z);
+        const z = ametr.z != null?ametr.z - 9.8:0;
+        acceleration = Math.sqrt(ametr.x * ametr.x + ametr.y * ametr.y + z * z);
         if (acceleration > maxAcceleration) {
           maxAcceleration = acceleration
         }
