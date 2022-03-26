@@ -56,15 +56,9 @@ export class ShakeDetector {
 
       if (delta >= 45) {
         this.cb(ShakeType.Orientation);
-        //this.finish()
+        this.finish()
       }
-      console.debug(
-        `Orientation change event, 
-            start: ${this.startOrientation}, 
-            curr: ${newOrientation},
-            delta: ${this.startOrientation.delta(newOrientation)}`,
-        evt
-      );
+      
     }
   };
 
@@ -88,9 +82,9 @@ export class ShakeDetector {
         evt.acceleration.y * evt.acceleration.y +
         evt.acceleration.z * evt.acceleration.z
     );
-    console.debug(`Motion event, total acceleration ${totalAcceleration}`, evt);
     if (totalAcceleration > this.accelerationLimit) {
       this.cb(ShakeType.Motion);
+      this.finish();
     }
   };
 
