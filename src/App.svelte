@@ -38,7 +38,7 @@
   window.addEventListener("devicemotion", handleMotionEvent);
   window.addEventListener("deviceorientation", handleOrientationChange);
 
-  const hasAccelerometr = "Accelerometer" in window;
+  const hasAccelerometr = "LinearAccelerationSensor" in window;
   let acceleration: number = 0;
   let maxAcceleration: number = 0;
 
@@ -48,7 +48,7 @@
       console.log(`Permission for accelerometr ${result.state}`);
     });
     try {
-      const ametr = new Accelerometer({
+      const ametr = new LinearAccelerationSensor({
         frequency: 10,
         referenceFrame: "device",
       });
@@ -60,7 +60,7 @@
         console.log("Accelerometer activated");
       });
       ametr.addEventListener("reading", (evt) => {
-        acceleration = Math.sqrt(ametr.x * ametr.x + ametr.y * ametr.y + ametr.z * ametr.z) - 9.8;
+        acceleration = Math.sqrt(ametr.x * ametr.x + ametr.y * ametr.y + ametr.z * ametr.z);
         if (acceleration > maxAcceleration) {
           maxAcceleration = acceleration
         }
