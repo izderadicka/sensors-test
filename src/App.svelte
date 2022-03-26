@@ -107,7 +107,7 @@
       </div>
     {/if}
 
-    {#if hasOrientationEvent && orientation}
+    {#if hasOrientationEvent && orientation && orientation.alpha != null}
       <div>
         <span class="label">Orientation Event: </span>
         <span class="complex-value">
