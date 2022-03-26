@@ -6,6 +6,7 @@ import { Orientation } from "./types";
 	const hasMotionEvent = "DeviceMotionEvent" in window;
 	let motionRaw: DeviceMotionEventAcceleration;
 	let motion: number = 0;
+	let motionMax = 0;
 
 	const hasOrientationEvent = "DeviceOrientationEvent" in window;
 	let orientation: Orientation;
@@ -13,6 +14,9 @@ import { Orientation } from "./types";
 	const handleMotionEvent = (evt: DeviceMotionEvent) => {
 		motionRaw = evt.acceleration;
 		motion = Math.sqrt(motionRaw.x * motionRaw.x + motionRaw.y * motionRaw.y + motionRaw.z * motionRaw.z);
+		if (motion> motionMax) {
+			motionMax = motion;
+		}
 	};
 
 	
@@ -40,7 +44,13 @@ import { Orientation } from "./types";
 		{#if hasMotionEvent}
 		<div>
 			<span class="label">Motion Event: </span>
-			<span class="value">{motion.toFixed(2)}</span>
+			<span class="complex-value">
+				<div class="ori">
+				<div><span class="label">actual: </span><span class="value">{motion.toFixed(2)}</span></div>
+				<div><span class="label">max: </span><span class="value">{motionMax.toFixed(2)}</span></div>
+				</div>
+			</span>
+			<span class="value"></span>
 			
 		</div>
 		{/if}
