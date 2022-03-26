@@ -50,8 +50,8 @@
   const onDetect = async () => {
     if (detectMotion) {
       const ac = createAudioContext();
-      const soundSleep = await loadAudioFile("/static/will_sleep_soon.mp3", ac);
-      const soundExtended = await loadAudioFile("/static/extended.mp3", ac);
+      const soundSleep = await loadAudioFile("static/will_sleep_soon.mp3", ac);
+      const soundExtended = await loadAudioFile("static/extended.mp3", ac);
       detectorTimeout = window.setTimeout(() => {
 		playBuffer(soundSleep, ac);
         detector = new ShakeDetector((how) => {
