@@ -47,6 +47,9 @@ export class Orientation {
 export class ShakeDetector {
   private cb: CBtype;
   private startOrientation: Orientation = null;
+
+  private ametr: LinearAccelerationSensor;
+
   private onOrientationChange = (evt: DeviceOrientationEvent) => {
     if (this.startOrientation == null) {
       this.startOrientation = new Orientation(evt.alpha, evt.beta, evt.gamma);
@@ -88,18 +91,35 @@ export class ShakeDetector {
     }
   };
 
+  onAcceleration = () => {
+    const acceleration = Math.sqrt(this.ametr.x * this.ametr.x + this.ametr.y * this.ametr.y + this.ametr.z * this.ametr.z);
+    if (acceleration > this.accelerationLimit) {
+      this.cb(ShakeType.Motion);
+      this.finish();
+    }
+  }
+
   constructor(
     callback: CBtype,
     private accelerationLimit = 20,
     private orientationChange = 45
   ) {
     this.cb = callback;
-    window.addEventListener("deviceorientation", this.onOrientationChange);
-    window.addEventListener("devicemotion", this.onMotion);
+    if ("LinearAccelerationSensor") {
+      this.ametr = new LinearAccelerationSensor();
+      this.ametr.addEventListener("reading", this.onAcceleration);
+      this.ametr.start();
+    }
+    // window.addEventListener("deviceorientation", this.onOrientationChange);
+    // window.addEventListener("devicemotion", this.onMotion);
   }
 
   finish() {
     window.removeEventListener("deviceorientation", this.onOrientationChange);
     window.removeEventListener("devicemotion", this.onMotion);
+    if (this.ametr) {
+      this.ametr.stop();
+      this.ametr = null;
+    }
   }
 }
